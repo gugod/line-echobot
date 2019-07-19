@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Data::Dumper qw<Dumper>;
 use Plack::Request;
 
 use LINE::Bot::API;
@@ -31,8 +32,12 @@ sub {
         return [400, [], ['bad request']];
     }
 
+    warn "Got an payload: " . $req->content;
+
     my $events = $bot->parse_events_from_json($req->content);
     for my $event (@{ $events }) {
+        warn "Got an event: " . Dumper($event);
+
         my $messages = LINE::Bot::API::Builder::SendMessage->new;
 
         if ($event->is_message_event) {
